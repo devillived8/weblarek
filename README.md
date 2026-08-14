@@ -188,7 +188,7 @@ Presenter - презентер содержит основную логику п
 #### Типы данных для коммуникации:
 
 `interface IProductsResponse {
-    products: IProduct[];
+    items: IProduct[];
     total: number;
 }` - сущность ответа о товарах
 
