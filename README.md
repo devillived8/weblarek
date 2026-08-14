@@ -98,3 +98,109 @@ Presenter - презентер содержит основную логику п
 `emit<T extends object>(event: string, data?: T): void` - инициализация события. При вызове события в метод передается название события и объект с данными, который будет использован как аргумент для вызова обработчика.  
 `trigger<T extends object>(event: string, context?: Partial<T>): (data: T) => void` - возвращает функцию, при вызове которой инициализируется требуемое в параметрах событие с передачей в него данных из второго параметра.
 
+#### Данные:
+`interface IProduct {
+  id: string;
+  description: string;
+  image: string;
+  title: string;
+  category: string;
+  price: number | null;
+}` -  сущность продукта.
+
+`interface IBuyer {
+  payment: TPayment;
+  email: string;
+  phone: string;
+  address: string;
+}` - сущность покупателя.
+
+`type TPayment = 'online' | 'cashOnDelivery' | null` - Сущность для метода оплаты.
+
+#### Модели данных:
+
+#### Класс ProductCatalog
+Хранит информацию о товарах, а так-же управляет товарами в приложении
+
+Конструктор класса не принимает параметров.
+
+Поля класса:
+`products: IProduct[]` - поле для хранения всех товаров в магазине.
+`selectedProduct: IProduct | null` - поле для хранения выбранного товара, который будет отображаться в модальном окне.
+
+Методы класса:
+`setProducts(products : IProduct[]): void` - сохранение товаров переданных в параметре метода.
+`getProducts(): IProduct[]` - получение товаров из сущности товаров.
+`getProduct(id: string) : IProduct | undefined` - получение одного товара по его id.
+`setSelectedProduct(product : IProduct) : void` - сохранение выбранного товара, для отображения его в модальном окне.
+`getSelectedProduct(): IProduct | null` - получение выбранного товара.
+
+#### Класс Cart
+Класс для управления товарами, добавленными в корзину
+
+Конструктор класса не принимает параметров.
+
+Поля класса:
+`cartProducts: IProduct[]` - массив товаров в корзине.
+
+Методы класса:
+`getProducts(): IProduct[]` - возвращает все товары в корзине.
+`addProduct(product: IProduct): void` - добавляет товар в корзину.
+`removeProduct(id: string): void` - удаляет товар из корзины по id.
+`clearCart(): void` - очищает корзину.
+`getTotal(): number` - возвращает общую стоимость всех товаров.
+`getCount(): number` - возвращает количество товаров в корзине.
+`contains(id: string): boolean` - проверяет, есть ли товар в корзине.
+
+#### Класс Buyer
+Класс для управления данными покупателя.
+
+Конструктор класса не принимает параметров.
+
+Поля класса:
+`payment: TPayment | null` — выбранный способ оплаты (карта, наличные, онлайн).
+`address: string` — адрес доставки.
+`phone: string` — контактный телефон.
+`email: string` — электронная почта.
+
+Методы класса:
+`setField<K extends keyof IBuyer>(field: K, value: IBuyer[K]): void` — сохраняет одно поле, не затрагивая другие.
+`getData(): IBuyer` — возвращает все данные покупателя.
+`clear(): void` — очищает все поля.
+`validate(): Partial<Record<keyof IBuyer, string>>` — проверяет заполненность полей и возвращает объект с ошибками (если есть).
+`isValid(): boolean` — возвращает `true`, если все поля валидны.
+
+#### Слой коммуникации:
+
+#### Класс Communication
+Класс, который отвечает за получение данных с сервера и отправку данных на сервер
+
+Конструктор класса принимает объект стартового класса Api
+`constructor(api: IApi) { this.api = api }`
+
+Поля класса:
+`api: IApi`
+
+Методы класса:
+`getProducts(): Promise<IProductsResponse>` — выполняет GET-запрос на эндпоинт `/product/` и возвращает объект с массивом товаров.
+`postOrder(data: IOrderData): Promise<IOrderResponse>` — выполняет POST-запрос на эндпоинт `/order/` с данными заказа и возвращает объект с подтверждением покупки.
+
+#### Типы данных для коммуникации:
+
+`interface IProductsResponse {
+    products: IProduct[];
+    total: number;
+}` - сущность ответа о товарах
+
+`interface IOrderData {
+    payment: TPayment;
+    email: string;
+    phone: string;
+    address: string;
+    products: string[];
+}` - сущность данных для отправки на сервер
+
+`interface IOrderResponse {
+    id: string;
+    total: number;
+}` - сущность ответа сервера для подтверждения заказа
