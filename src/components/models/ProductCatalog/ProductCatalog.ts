@@ -21,10 +21,6 @@ export class ProductCatalog {
   }
 
   getSelectedProduct(): IProduct | null {
-    if (this.selectedProduct !== null) {
-      return this.selectedProduct;
-    }
-
-    return null;
+    return this.selectedProduct;
   }
 }

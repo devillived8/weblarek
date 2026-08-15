@@ -1,11 +1,15 @@
-export type ApiPostMethods = 'POST' | 'PUT' | 'DELETE';
+export type ApiPostMethods = "POST" | "PUT" | "DELETE";
 
 export interface IApi {
-    get<T extends object>(uri: string): Promise<T>;
-    post<T extends object>(uri: string, data: object, method?: ApiPostMethods): Promise<T>;
+  get<T extends object>(uri: string): Promise<T>;
+  post<T extends object>(
+    uri: string,
+    data: object,
+    method?: ApiPostMethods,
+  ): Promise<T>;
 }
 
-export type TPayment = 'online' | 'cashOnDelivery' | null;
+export type TPayment = "card" | "cash";
 
 export interface IProduct {
   id: string;
@@ -16,9 +20,8 @@ export interface IProduct {
   price: number | null;
 }
 
-
 export interface IBuyer {
-  payment: TPayment;
+  payment: TPayment | null;
   email: string;
   phone: string;
   address: string;
@@ -34,11 +37,13 @@ export interface IOrderData {
   email: string;
   phone: string;
   address: string;
-  products: string[];
+  items: string[];
+  total: number;
 }
 
 export interface IOrderResponse {
-    id: string;
-    total: number;
+  id: string;
+  total: number;
 }
 
+export type TBuyerErrors = Partial<Record<keyof IBuyer, string>>;

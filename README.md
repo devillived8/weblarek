@@ -115,7 +115,7 @@ Presenter - презентер содержит основную логику п
   address: string;
 }` - сущность покупателя.
 
-`type TPayment = 'online' | 'cashOnDelivery' | null` - Сущность для метода оплаты.
+`type TPayment = 'online' | 'cash'` - Сущность для метода оплаты.
 
 #### Модели данных:
 
@@ -197,7 +197,8 @@ Presenter - презентер содержит основную логику п
     email: string;
     phone: string;
     address: string;
-    products: string[];
+    items: string[];
+    total: number;
 }` - сущность данных для отправки на сервер
 
 `interface IOrderResponse {

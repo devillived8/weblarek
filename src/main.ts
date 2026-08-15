@@ -11,10 +11,10 @@ import { Api } from "./components/base/Api";
 const productCatalog = new ProductCatalog();
 console.log("---------Класс-ProductCatalog---------");
 productCatalog.setProducts(apiProducts.items);
-console.log(productCatalog.getProducts());
-console.log(productCatalog.getProduct("c101ab44-ed99-4a54-990d-47aa2bb4e7d9"));
+console.log('Получение всех товаров - ',  productCatalog.getProducts());
+console.log('Получаем продукт по ID - ', productCatalog.getProduct("c101ab44-ed99-4a54-990d-47aa2bb4e7d9"));
 productCatalog.setSelectedProduct(apiProducts.items[0]);
-console.log(productCatalog.getSelectedProduct());
+console.log('Получаем выбранный продукт - ', productCatalog.getSelectedProduct());
 // Тесты класса Cart
 
 const cart = new Cart();
@@ -24,36 +24,36 @@ for (let i = 0; i < apiProducts.items.length; i++) {
   cart.addProduct(apiProducts.items[i]);
 }
 
-console.log(cart.getProducts());
+console.log('Получаем все продукты в корзине - ', cart.getProducts());
 cart.removeProduct("c101ab44-ed99-4a54-990d-47aa2bb4e7d9");
-console.log(cart.getProducts());
+console.log('Проверяем удаление продукта и выводим результат - ', cart.getProducts());
 cart.clearCart();
-console.log(cart.getProducts());
+console.log('Проверяем полную очистку корзины - ', cart.getProducts());
 for (let i = 0; i < apiProducts.items.length; i++) {
   cart.addProduct(apiProducts.items[i]);
 }
-console.log(cart.getTotal());
-console.log(cart.getCount());
-console.log(cart.contains("c101ab44-ed99-4a54-990d-47aa2bb4e7d9"));
-console.log(cart.contains("gfdsgsfdg"));
+console.log('Получаем общую стоимость - ', cart.getTotal());
+console.log('Получаем количество товаров в корзине - ', cart.getCount());
+console.log('Проверяем наличие товара в корзине по ID - ', cart.contains("c101ab44-ed99-4a54-990d-47aa2bb4e7d9"));
+console.log('Проверяем наличие товара в корзине по ID - ', cart.contains("gfdsgsfdg"));
 // Тесты класса Buyer
 const buyer = new Buyer();
 console.log("--------------Класс-Buyer--------------");
-buyer.setField("payment", "online");
+buyer.setField("payment", "cash");
 buyer.setField("email", "gdfsgfdsg");
 buyer.setField("phone", "+895432534253");
 buyer.setField("address", "gsdfgfdsgf");
-console.log(buyer.getData());
+console.log('Получаем информацию о покупателе - ', buyer.getData());
 buyer.clear();
-console.log(buyer.getData());
-console.log(buyer.validate());
-console.log(buyer.isValid());
-buyer.setField("payment", "online");
+console.log('Проверяем метод очистки данных покупателя и получаем информацию о покупателе - ', buyer.getData());
+console.log('Проверяем данные на null - ', buyer.validate());
+console.log('Проверяем метод возвращающий булево значение, относительно массива ошибок - ', buyer.isValid());
+buyer.setField("payment", "card");
 buyer.setField("email", "gdfsgfdsg");
 buyer.setField("phone", "+895432534253");
 buyer.setField("address", "gsdfgfdsgf");
-console.log(buyer.validate());
-console.log(buyer.isValid());
+console.log('Проверяем данные на null - ', buyer.validate());
+console.log('Проверяем метод возвращающий булево значение, относительно массива ошибок - ', buyer.isValid());
 // Тесты класса Communication
 const api = new Api(API_URL);
 const communication = new Communication(api);
@@ -62,7 +62,7 @@ communication
   .getProducts()
   .then((response) => {
     productCatalog.setProducts(response.items);
-    console.log("Товары загружены:", productCatalog.getProducts());
+    console.log("Получаем данные о продуктах после заполнения с ответа сервера - ", productCatalog.getProducts());
     console.log("Всего товаров:", response.total);
     console.log("---------------------------------------");
   })
