@@ -22,13 +22,18 @@ import { Success } from "./components/views/Success/Success";
 const events = new EventEmitter();
 const api = new Api(API_URL);
 const communication = new Communication(api);
-
 const productCatalog = new ProductCatalog(events);
 const buyer = new Buyer(events);
 const cart = new Cart(events);
 const gallery = new Gallery(ensureElement<HTMLElement>(".gallery"));
 const modal = new Modal(events, ensureElement<HTMLElement>(".modal"));
 const header = new Header(events, ensureElement<HTMLElement>(".header"));
+const basketElement = cloneTemplate<HTMLElement>("#basket");
+const basket = new Basket(events, basketElement);
+const formElementOrder = cloneTemplate<HTMLElement>("#order");
+const formOrder = new FormOrder(events, formElementOrder);
+const formElementContacts = cloneTemplate<HTMLElement>("#contacts");
+const formContacts = new FormContacts(events, formElementContacts);
 
 communication
   .getProducts()
@@ -87,7 +92,7 @@ events.on("modal:close", () => {
   modal.close();
 });
 
-const renderBasket = (basket: Basket) => {
+const renderBasket = () => {
   const products = cart.getProducts();
 
   const cards = products.map((product, index) => {
@@ -109,13 +114,9 @@ const renderBasket = (basket: Basket) => {
   basket.price = cart.getTotal();
 };
 
-let basket: Basket | null = null;
-
 events.on("cart:changed", () => {
   header.counter = cart.getCount();
-  if (basket) {
-    renderBasket(basket);
-  }
+  renderBasket();
 });
 
 events.on("cardPreview:cartChanged", () => {
@@ -136,29 +137,15 @@ events.on<{ id: string }>("cardBasket:delete", ({ id }) => {
 });
 
 events.on("basket:open", () => {
-  const basketElement = cloneTemplate<HTMLElement>("#basket");
-
-  basket = new Basket(events, basketElement);
-
-  renderBasket(basket);
-
   modal.content = basket.render();
   modal.open();
 });
 
-let formOrder: FormOrder | null = null;
-let formContacts: FormContacts | null = null;
-
 events.on("basket:checkout", () => {
-  const formElement = cloneTemplate<HTMLElement>("#order");
-
-  formOrder = new FormOrder(events, formElement);
-
   modal.content = formOrder.render();
   modal.open();
 });
 
-// Presenter
 events.on<{ payment: TPayment }>("formOrder:payment", ({ payment }) => {
   buyer.setField("payment", payment);
 });
@@ -171,28 +158,33 @@ events.on<{ field: "address"; value: string }>(
 );
 
 events.on("buyer:changed", () => {
+  const data = buyer.getData();
   const errors = buyer.validate();
 
-  if (formOrder) {
-    formOrder.errorText = [errors.payment, errors.address]
-      .filter(Boolean)
-      .join(" ");
+  formOrder.errorText = [errors.payment, errors.address]
+    .filter(Boolean)
+    .join(". ");
 
-    formOrder.submitDisabled = Boolean(errors.payment || errors.address);
-  }
+  formOrder.submitDisabled = Boolean(errors.payment || errors.address);
+
+  formOrder.render({
+    payment: data.payment,
+    address: data.address,
+  });
+
+  formContacts.errorText = [errors.email, errors.phone]
+    .filter(Boolean)
+    .join(". ");
+
+  formContacts.submitDisabled = Boolean(errors.email || errors.phone);
+
+  formContacts.render({
+    email: data.email,
+    phone: data.phone,
+  });
 });
 
 events.on("formOrder:submit", () => {
-  const errors = buyer.validate();
-
-  if (errors.payment || errors.address) {
-    return;
-  }
-
-  const formElement = cloneTemplate<HTMLElement>("#contacts");
-
-  formContacts = new FormContacts(events, formElement);
-
   modal.content = formContacts.render();
 });
 
@@ -203,25 +195,7 @@ events.on<{ field: "email" | "phone"; value: string }>(
   },
 );
 
-events.on("buyer:changed", () => {
-  const errors = buyer.validate();
-
-  if (formContacts) {
-    formContacts.errorText = [errors.email, errors.phone]
-      .filter(Boolean)
-      .join(" ");
-
-    formContacts.submitDisabled = Boolean(errors.email || errors.phone);
-  }
-});
-
 events.on("formContacts:submit", () => {
-  const errors = buyer.validate();
-
-  if (errors.payment || errors.address || errors.email || errors.phone) {
-    return;
-  }
-
   const buyerData = buyer.getData();
 
   if (buyerData.payment === null) {

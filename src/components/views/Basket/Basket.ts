@@ -30,6 +30,8 @@ export class Basket extends Component<IBasket> {
       this.container,
     );
 
+    this.basketBtn.disabled = true;
+
     this.basketBtn.addEventListener("click", () => {
       this.events.emit("basket:checkout");
     });

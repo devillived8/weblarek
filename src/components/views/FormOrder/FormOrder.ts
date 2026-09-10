@@ -33,12 +33,6 @@ export class FormOrder extends Form {
 
     this.paymentButtons.forEach((button) => {
       button.addEventListener("click", () => {
-        this.paymentButtons.forEach((button) => {
-          button.classList.remove("button_alt-active");
-        });
-
-        button.classList.add("button_alt-active");
-
         this.events.emit("formOrder:payment", {
           payment: button.name as TPayment,
         });
@@ -55,5 +49,15 @@ export class FormOrder extends Form {
 
   set submitDisabled(value: boolean) {
     this.submitBtn.disabled = value;
+  }
+
+  set address(address: string) {
+    this.addressDeliveryElement.value = address;
+  }
+
+  set payment(value: TPayment | null) {
+    this.paymentButtons.forEach((btn) => {
+      btn.classList.toggle("button_alt-active", btn.name === value);
+    });
   }
 }

@@ -6,7 +6,7 @@ import { CDN_URL, categoryMap } from "../../../utils/constants";
 type TCategory = keyof typeof categoryMap;
 
 interface ICardCatalog extends ICard {
-  category: TCategory;
+  category: string;
   image: string;
 }
 

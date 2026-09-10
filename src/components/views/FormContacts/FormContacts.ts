@@ -49,4 +49,12 @@ export class FormContacts extends Form {
   set submitDisabled(value: boolean) {
     this.submitBtn.disabled = value;
   }
+
+  set email(email: string) {
+    this.emailInputElement.value = email;
+  }
+
+  set phone(phone: string) {
+    this.phoneInputElement.value = phone;
+  }
 }

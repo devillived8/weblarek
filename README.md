@@ -386,6 +386,8 @@ Presenter - презентер содержит основную логику п
 
 Методы класса:
 `set submitDisabled(value: boolean)` — устанавливает доступность кнопки перехода к следующему этапу.
+`set address(address: string)` - устанавливает адресс.
+`set payment(value: TPayment | null)` - устанавливает метод оплаты.
 При выборе способа оплаты генерируется событие formOrder:payment.
 При изменении адреса генерируется событие formOrder:addressChange.
 При отправке формы генерируется событие formOrder:submit.
@@ -406,6 +408,8 @@ Presenter - презентер содержит основную логику п
 
 Методы класса:
 `set submitDisabled(value: boolean)` — устанавливает доступность кнопки оплаты.
+`set email(email: string)` - устанавливает почту.
+`set phone(phone: string)` - устанавливает номер телефона.
 При изменении email или телефона генерируется событие formContacts:change.
 При отправке формы генерируется событие formContacts:submit.
 
